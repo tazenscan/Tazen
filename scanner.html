@@ -1,1 +1,86 @@
-
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#170d24">
+<link rel="manifest" href="manifest.webmanifest">
+<title>TAZEN UNLEASHED — Skaner</title>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(rgba(15,5,30,.80),rgba(15,5,30,.90)),url('tazen-purple-background.png') center top/cover fixed no-repeat;color:#fff;font:16px/1.5 Arial;padding:18px}
+main{max-width:720px;margin:auto}h1,h2{color:#d9b8ff}section{background:#241637;border:1px solid #9b75bd;border-radius:14px;padding:18px;margin:14px 0;backdrop-filter:blur(8px);box-shadow:0 14px 40px #08001288}
+button{padding:12px 16px;background:#d9b8ff;border:0;border-radius:8px;font-weight:bold;margin:6px 5px 6px 0}
+.secondary{background:#654783;color:white}input{width:100%;padding:12px;background:#170d24;color:white;border:1px solid #765a91;border-radius:8px}
+#reader{max-width:520px;margin:12px auto}.result{padding:14px;border-radius:10px;margin-top:12px;font-weight:bold}
+.ok{background:#123b2a;color:#a5f0c3}.bad{background:#4b1d24;color:#ffb3bd}.neutral{background:#292d3a;color:#fff}
+.small{font-size:13px;color:#e2d5f2}.count{font-size:18px;color:#d9b8ff}
+</style></head><body><main>
+<h1>TAZEN UNLEASHED</h1><p>Skaner biletów — iPhone</p>
+<section><h2>1. Wczytaj listę biletów</h2>
+<p class="small">Na komputerze w panelu administratora pobierz plik kopii JSON. Przenieś go na iPhone'a (np. przez iCloud Drive, AirDrop lub Pliki), a następnie wybierz go poniżej. Import zastępuje obecną listę skanera.</p>
+<input id="importfile" type="file" accept=".json,application/json">
+<p id="status" class="small">Nie wczytano listy.</p><p id="count" class="count"></p>
+<button id="export" class="secondary">Eksportuj listę po imprezie</button>
+</section>
+<section><h2>2. Skanuj kod QR</h2>
+<p class="small">Uruchom aparat. Zielony komunikat oznacza zaakceptowane wejście. Czerwony oznacza nieznany lub już wykorzystany bilet.</p>
+<button id="start">Uruchom aparat</button><button id="stop" class="secondary">Zatrzymaj</button>
+<div id="reader"></div><div id="result" class="result neutral">Oczekiwanie na skan.</div>
+</section>
+<section><h2>Ważne</h2><ul class="small">
+<li>Lista biletów jest przechowywana lokalnie w Safari na tym iPhonie.</li>
+<li>Po imporcie nie importuj ponownie starej kopii w trakcie wpuszczania gości — przywróciłaby wcześniejszy stan i mogłaby dopuścić ponowne użycie biletów.</li>
+<li>Nie kasuj danych Safari ani danych tej strony przed eksportem wyników.</li>
+<li>Używaj tylko jednego iPhone'a jako skanera. Kilka kopii listy nie synchronizuje się ze sobą.</li>
+<li>Skaner wymaga dostępu do internetu przy pierwszym załadowaniu biblioteki i połączenia HTTPS do użycia aparatu.</li>
+</ul></section>
+</main>
+<script>
+const KEY='tazen_phone_scanner_v1';
+let tickets=load(), scanner=null, lastCode='', lastAt=0;
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
+function save(){localStorage.setItem(KEY,JSON.stringify(tickets));render()}
+function render(){
+ const used=tickets.filter(t=>t.used).length;
+ document.getElementById('count').textContent=tickets.length?`Bilety: ${tickets.length} · wykorzystane: ${used} · pozostałe: ${tickets.length-used}`:'';
+}
+function say(msg,cls){const el=document.getElementById('result');el.className='result '+cls;el.textContent=msg}
+function validList(x){return Array.isArray(x)&&x.length>0&&x.every(t=>t&&typeof t.id==='string'&&typeof t.name==='string'&&typeof t.used==='boolean')}
+document.getElementById('importfile').addEventListener('change',async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const parsed=JSON.parse(await file.text());
+  if(!validList(parsed))throw new Error('Plik nie zawiera prawidłowej listy biletów z panelu administratora.');
+  if(!confirm(`Wczytać ${parsed.length} biletów? Obecna lista na tym iPhonie zostanie zastąpiona.`))return;
+  tickets=parsed.map(t=>({...t,used:!!t.used,usedAt:t.usedAt||null}));save();
+  document.getElementById('status').textContent='Lista została wczytana poprawnie.';
+  say('Lista gotowa do skanowania.','ok');
+ }catch(err){alert(err.message||'Nie udało się odczytać pliku.');}
+ e.target.value='';
+});
+document.getElementById('export').onclick=()=>{
+ if(!tickets.length){alert('Najpierw wczytaj listę biletów.');return}
+ const blob=new Blob([JSON.stringify(tickets,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='tazen-wyniki-wejsc.json';a.click();URL.revokeObjectURL(url);
+};
+async function onScan(decoded){
+ const now=Date.now();if(decoded===lastCode&&now-lastAt<2500)return;lastCode=decoded;lastAt=now;
+ const t=tickets.find(x=>x.id===decoded.trim());
+ if(!t){say('NIEZNANY BILET — brak na zaimportowanej liście.','bad');return}
+ if(t.used){say(`BILET JUŻ WYKORZYSTANY — ${t.name}`,'bad');return}
+ t.used=true;t.usedAt=new Date().toISOString();save();
+ say(`BILET WAŻNY — WEJŚCIE ZALICZONE: ${t.name}`,'ok');
+}
+document.getElementById('start').onclick=async()=>{
+ if(!tickets.length){alert('Najpierw wczytaj listę biletów.');return}
+ if(!window.Html5Qrcode){alert('Nie udało się załadować skanera. Sprawdź internet i odśwież stronę.');return}
+ try{
+  scanner=new Html5Qrcode('reader');
+  await scanner.start({facingMode:'environment'},{fps:10,qrbox:{width:240,height:240}},onScan);
+  say('Aparat uruchomiony — pokaż kod QR.','neutral');
+ }catch(e){say('Nie udało się uruchomić aparatu. Sprawdź uprawnienia Safari i HTTPS.','bad')}
+};
+document.getElementById('stop').onclick=async()=>{if(scanner){try{await scanner.stop();scanner.clear()}catch(e){}scanner=null;say('Skaner zatrzymany.','neutral')}};
+render();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+</script></body></html>
