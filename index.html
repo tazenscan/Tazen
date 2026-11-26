@@ -1,28 +1,75 @@
 <!doctype html>
-<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#211333"><title>TAZEN UNLEASHED — Półmetek Zabrza</title>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#211333">
+<title>TAZEN UNLEASHED — Półmetek Zabrza</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font:16px/1.55 Arial,sans-serif;color:#fff;background:linear-gradient(145deg,#120b20,#2a1742)}
-main{max-width:850px;margin:auto;padding:24px 16px 60px}.hero{text-align:center;padding:42px 18px;background:linear-gradient(135deg,#eee4ff,#b99ae8);color:#26133f;border-radius:22px}
-h1{font-size:clamp(30px,7vw,54px);margin:0}h2{color:#e5d4ff}.hero p{font-weight:bold}.card{background:#211632;border:1px solid #6b4b8c;border-radius:16px;padding:20px;margin:18px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}.pool{background:#302047;padding:16px;border-radius:12px}
-.price{font-size:26px;font-weight:bold;color:#e5d4ff}label{display:block;color:#d9c8ef;font-size:14px;margin:12px 0 5px}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 Arial,sans-serif;color:#fff;background:linear-gradient(145deg,#120b20,#2a1742)}
+main{max-width:850px;margin:auto;padding:24px 16px 60px}
+.hero{position:relative;overflow:hidden;text-align:center;padding:30px 18px 34px;background:linear-gradient(135deg,#f5edff,#c7a8f2 52%,#8e62c3);color:#26133f;border:1px solid #eadcff;border-radius:24px;box-shadow:0 18px 55px #08041180}
+.hero-art{display:block;width:100%;max-width:600px;height:auto;margin:0 auto 8px}
+.hero h1{font-size:clamp(32px,8vw,58px);line-height:1.02;letter-spacing:.035em;margin:4px 0 8px;font-weight:900}
+.hero .subtitle{font-size:clamp(17px,3.8vw,23px);font-weight:900;letter-spacing:.22em;margin:0 0 16px}
+.hero .details{display:inline-block;background:#26133f;color:#fff;padding:10px 18px;border-radius:999px;font-weight:bold;margin:4px}
+h2{color:#e5d4ff}
+.card{background:#211632;border:1px solid #6b4b8c;border-radius:16px;padding:20px;margin:18px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.pool{background:#302047;padding:16px;border-radius:12px}
+.price{font-size:26px;font-weight:bold;color:#e5d4ff}
+label{display:block;color:#d9c8ef;font-size:14px;margin:12px 0 5px}
 input,select{width:100%;padding:13px;border-radius:9px;border:1px solid #795b9b;background:#140d20;color:white;font-size:16px}
 button{background:#d9b8ff;color:#211333;border:0;border-radius:10px;padding:14px 18px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:16px;width:100%}
-.note{font-size:13px;color:#cbb9dd}.hidden{display:none}.total{font-size:20px;font-weight:bold;margin-top:14px;color:#e5d4ff}
-</style></head><body><main>
-<section class="hero"><h1>TAZEN UNLEASHED</h1><p>PÓŁMETEK ZABRZA</p><p>19 grudnia · godz. 21:00</p><p>Cotton Club · Katowice</p></section>
+.note{font-size:13px;color:#cbb9dd}.total{font-size:20px;font-weight:bold;margin-top:14px;color:#e5d4ff}
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+  <!-- Grafika jest wbudowana w ten plik — nie wymaga osobnego obrazka ani linku. -->
+  <svg class="hero-art" viewBox="0 0 720 230" role="img" aria-label="Fioletowa grafika klubowa z reflektorami i falami światła">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#241039"/><stop offset=".55" stop-color="#603b8e"/><stop offset="1" stop-color="#b58be8"/></linearGradient>
+      <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".8"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <rect x="5" y="5" width="710" height="220" rx="22" fill="url(#bg)"/>
+    <path d="M105 12 L265 218 L165 218 L72 12Z M615 12 L455 218 L555 218 L648 12Z" fill="url(#beam)" opacity=".38"/>
+    <g fill="none" stroke="#f4eaff" stroke-width="2" opacity=".55">
+      <path d="M25 174 Q110 90 195 174 T365 174 T535 174 T695 174"/>
+      <path d="M25 190 Q110 106 195 190 T365 190 T535 190 T695 190"/>
+      <path d="M25 206 Q110 122 195 206 T365 206 T535 206 T695 206"/>
+    </g>
+    <g filter="url(#glow)" fill="#fff">
+      <circle cx="105" cy="42" r="5"/><circle cx="615" cy="42" r="5"/><circle cx="360" cy="25" r="4"/>
+    </g>
+    <g fill="#1b1028" opacity=".9">
+      <path d="M40 218v-34l12-14 12 14v34M82 218v-49l12-13 12 13v49M130 218v-30l12-12 12 12v30M560 218v-30l12-12 12 12v30M608 218v-49l12-13 12 13v49M656 218v-34l12-14 12 14v34"/>
+    </g>
+    <g fill="#f7efff" opacity=".9"><rect x="220" y="38" width="280" height="3" rx="2"/><rect x="250" y="48" width="220" height="2" rx="1"/></g>
+    <text x="360" y="104" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="21" font-weight="bold" letter-spacing="8">NIGHT • ENERGY • MUSIC</text>
+    <text x="360" y="151" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="43" font-weight="900" letter-spacing="4">UNLEASHED</text>
+  </svg>
+  <h1>TAZEN UNLEASHED</h1>
+  <p class="subtitle">PÓŁMETEK ZABRZA</p>
+  <p class="details">19 GRUDNIA · GODZ. 21:00</p>
+  <p class="details">COTTON CLUB · KATOWICE</p>
+</section>
+
 <section class="card"><h2>Cennik biletów</h2><div class="grid">
 <div class="pool"><b>I pula</b><div class="price">30 zł</div><span class="note">Pierwszy tydzień sprzedaży</span></div>
 <div class="pool"><b>II pula</b><div class="price">40 zł</div><span class="note">Kolejne dwa tygodnie</span></div>
 <div class="pool"><b>III pula</b><div class="price">50 zł</div><span class="note">Ostatni tydzień sprzedaży</span></div>
 </div></section>
+
 <section class="card"><h2>Zamów bilety</h2>
 <form id="orderForm">
-<label>Imię i nazwisko</label><input id="name" required maxlength="100" autocomplete="name" placeholder="Jan Kowalski">
-<label>Adres e-mail</label><input id="email" type="email" required maxlength="150" autocomplete="email" placeholder="jan@email.com">
-<label>Wybierz pulę</label><select id="pool"><option value="30">I pula — 30 zł</option><option value="40">II pula — 40 zł</option><option value="50">III pula — 50 zł</option></select>
-<label>Liczba biletów</label><input id="qty" type="number" min="1" max="20" value="1" required>
+<label for="name">Imię i nazwisko</label><input id="name" required maxlength="100" autocomplete="name" placeholder="Jan Kowalski">
+<label for="email">Adres e-mail</label><input id="email" type="email" required maxlength="150" autocomplete="email" placeholder="jan@email.com">
+<label for="pool">Wybierz pulę</label><select id="pool"><option value="30">I pula — 30 zł</option><option value="40">II pula — 40 zł</option><option value="50">III pula — 50 zł</option></select>
+<label for="qty">Liczba biletów</label><input id="qty" type="number" min="1" max="20" value="1" required>
 <div class="total" id="total">Do zapłaty: 30 zł</div>
 <button type="submit">Przygotuj zamówienie e-mail</button>
 </form>
@@ -42,4 +89,6 @@ const body='Dzień dobry,%0D%0A%0D%0AProszę o przyjęcie zamówienia:%0D%0AImi�
 location.href='mailto:tazenpartyevents@gmail.com?subject='+encodeURIComponent(subject)+'&body='+body;
 });
 update();
-</script></body></html>
+</script>
+</body>
+</html>
