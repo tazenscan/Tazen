@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#211333"><title>TAZEN UNLEASHED — Półmetek Zabrza</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px/1.55 Arial,sans-serif;color:#fff;background:linear-gradient(145deg,#120b20,#2a1742)}
+main{max-width:850px;margin:auto;padding:24px 16px 60px}.hero{text-align:center;padding:42px 18px;background:linear-gradient(135deg,#eee4ff,#b99ae8);color:#26133f;border-radius:22px}
+h1{font-size:clamp(30px,7vw,54px);margin:0}h2{color:#e5d4ff}.hero p{font-weight:bold}.card{background:#211632;border:1px solid #6b4b8c;border-radius:16px;padding:20px;margin:18px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}.pool{background:#302047;padding:16px;border-radius:12px}
+.price{font-size:26px;font-weight:bold;color:#e5d4ff}label{display:block;color:#d9c8ef;font-size:14px;margin:12px 0 5px}
+input,select{width:100%;padding:13px;border-radius:9px;border:1px solid #795b9b;background:#140d20;color:white;font-size:16px}
+button{background:#d9b8ff;color:#211333;border:0;border-radius:10px;padding:14px 18px;font-weight:bold;font-size:16px;cursor:pointer;margin-top:16px;width:100%}
+.note{font-size:13px;color:#cbb9dd}.hidden{display:none}.total{font-size:20px;font-weight:bold;margin-top:14px;color:#e5d4ff}
+</style></head><body><main>
+<section class="hero"><h1>TAZEN UNLEASHED</h1><p>PÓŁMETEK ZABRZA</p><p>19 grudnia · godz. 21:00</p><p>Cotton Club · Katowice</p></section>
+<section class="card"><h2>Cennik biletów</h2><div class="grid">
+<div class="pool"><b>I pula</b><div class="price">30 zł</div><span class="note">Pierwszy tydzień sprzedaży</span></div>
+<div class="pool"><b>II pula</b><div class="price">40 zł</div><span class="note">Kolejne dwa tygodnie</span></div>
+<div class="pool"><b>III pula</b><div class="price">50 zł</div><span class="note">Ostatni tydzień sprzedaży</span></div>
+</div></section>
+<section class="card"><h2>Zamów bilety</h2>
+<form id="orderForm">
+<label>Imię i nazwisko</label><input id="name" required maxlength="100" autocomplete="name" placeholder="Jan Kowalski">
+<label>Adres e-mail</label><input id="email" type="email" required maxlength="150" autocomplete="email" placeholder="jan@email.com">
+<label>Wybierz pulę</label><select id="pool"><option value="30">I pula — 30 zł</option><option value="40">II pula — 40 zł</option><option value="50">III pula — 50 zł</option></select>
+<label>Liczba biletów</label><input id="qty" type="number" min="1" max="20" value="1" required>
+<div class="total" id="total">Do zapłaty: 30 zł</div>
+<button type="submit">Przygotuj zamówienie e-mail</button>
+</form>
+<p class="note">Po kliknięciu otworzy się aplikacja pocztowa z przygotowaną wiadomością. Zamówienie zostanie złożone dopiero po wysłaniu e-maila. Organizator potwierdzi dostępność i płatność. Bilety są wysyłane po zaksięgowaniu wpłaty.</p>
+</section>
+<section class="card"><h2>Kontakt</h2><p>tazenpartyevents@gmail.com</p></section>
+</main>
+<script>
+const pool=document.getElementById('pool'),qty=document.getElementById('qty'),total=document.getElementById('total');
+function update(){let n=Math.max(1,Math.min(20,parseInt(qty.value||'1',10)));total.textContent='Do zapłaty: '+(n*Number(pool.value))+' zł'}
+pool.addEventListener('change',update);qty.addEventListener('input',update);
+document.getElementById('orderForm').addEventListener('submit',e=>{
+e.preventDefault();const name=document.getElementById('name').value.trim(),email=document.getElementById('email').value.trim(),n=Math.max(1,Math.min(20,parseInt(qty.value,10))),price=Number(pool.value);
+const poolName=price===30?'I pula':price===40?'II pula':'III pula';
+const subject='Zamówienie biletów TAZEN UNLEASHED — '+name;
+const body='Dzień dobry,%0D%0A%0D%0AProszę o przyjęcie zamówienia:%0D%0AImię i nazwisko: '+encodeURIComponent(name)+'%0D%0AE-mail: '+encodeURIComponent(email)+'%0D%0APula: '+encodeURIComponent(poolName)+'%0D%0ALiczba biletów: '+n+'%0D%0ACena za bilet: '+price+' zł%0D%0AKwota łącznie: '+(n*price)+' zł%0D%0A%0D%0AProszę o informację dotyczącą płatności.%0D%0A';
+location.href='mailto:tazenpartyevents@gmail.com?subject='+encodeURIComponent(subject)+'&body='+body;
+});
+update();
+</script></body></html>
